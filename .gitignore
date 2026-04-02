@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Env / secrets
+.env
+.env.local
+
+# OS / editor
+.DS_Store

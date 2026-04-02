@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-950 text-gray-100;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-900;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-700 rounded-full;
+  }
+}
+
+@layer components {
+  /* Card */
+  .card {
+    @apply bg-gray-900 border border-gray-800 rounded-xl p-5;
+  }
+
+  /* Primary button */
+  .btn-primary {
+    @apply bg-brand-600 hover:bg-brand-800 text-white font-medium
+           px-4 py-2 rounded-lg text-sm transition-colors disabled:opacity-40
+           disabled:cursor-not-allowed;
+  }
+
+  /* Secondary button */
+  .btn-secondary {
+    @apply bg-gray-800 hover:bg-gray-700 text-gray-200 font-medium
+           px-4 py-2 rounded-lg text-sm border border-gray-700 transition-colors
+           disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+
+  /* Accent (teal) button */
+  .btn-accent {
+    @apply bg-accent-400 hover:bg-accent-600 text-white font-medium
+           px-4 py-2 rounded-lg text-sm transition-colors disabled:opacity-40
+           disabled:cursor-not-allowed;
+  }
+
+  /* Form label */
+  .form-label {
+    @apply block text-xs font-medium text-gray-400 mb-1;
+  }
+
+  /* Form input */
+  .form-input {
+    @apply w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2
+           text-sm text-gray-100 focus:outline-none focus:border-brand-400
+           focus:ring-1 focus:ring-brand-400 transition-colors;
+  }
+
+  /* Form select */
+  .form-select {
+    @apply w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2
+           text-sm text-gray-100 focus:outline-none focus:border-brand-400
+           focus:ring-1 focus:ring-brand-400 transition-colors cursor-pointer;
+  }
+
+  /* Metric card */
+  .metric-card {
+    @apply bg-gray-800 rounded-xl p-4 border border-gray-700;
+  }
+
+  /* Badge */
+  .badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium;
+  }
+  .badge-purple {
+    @apply bg-brand-50 text-brand-800;
+  }
+  .badge-green {
+    @apply bg-accent-50 text-accent-600;
+  }
+  .badge-red {
+    @apply bg-red-950 text-red-400;
+  }
+  .badge-yellow {
+    @apply bg-yellow-950 text-yellow-400;
+  }
+  .badge-gray {
+    @apply bg-gray-700 text-gray-300;
+  }
+}
+
+/* Animated running dot */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.2; }
+}
+.blink { animation: blink 1.2s ease-in-out infinite; }
+
+/* Gene bit animation */
+@keyframes pop-in {
+  from { transform: scale(0.6); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+.gene-pop { animation: pop-in 0.15s ease-out; }
