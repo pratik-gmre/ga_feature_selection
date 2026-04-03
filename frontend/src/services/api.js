@@ -1,8 +1,3 @@
-/**
- * services/api.js
- * Central API client — all backend calls go through here.
- * Base URL is read from the VITE_API_URL env var (default: http://localhost:8000).
- */
 
 const BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:8000'
 
@@ -49,7 +44,7 @@ export const initializeGA = (params) =>
     body: JSON.stringify(params),
   })
 
-// ─── Run full GA ───────────────────────────────────────────────────────────
+
 export const runGA = (sessionId, nGenerations, crossoverType = 'two_point') =>
   request('/run', {
     method: 'POST',
@@ -61,7 +56,7 @@ export const runGA = (sessionId, nGenerations, crossoverType = 'two_point') =>
     }),
   })
 
-// ─── Single step ───────────────────────────────────────────────────────────
+
 export const stepGA = (sessionId, crossoverType = 'two_point') =>
   request('/step', {
     method: 'POST',

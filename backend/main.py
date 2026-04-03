@@ -38,10 +38,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ─────────────────────────────────────────────────────────
-# In-Memory Session Store
-# Each session holds its own GA + evaluator state
-# ─────────────────────────────────────────────────────────
 
 sessions: Dict[str, Dict[str, Any]] = {}
 
@@ -50,10 +46,6 @@ def get_session(session_id: str) -> Dict[str, Any]:
         raise HTTPException(status_code=404, detail=f"Session '{session_id}' not found.")
     return sessions[session_id]
 
-
-# ─────────────────────────────────────────────────────────
-# Request / Response Models
-# ─────────────────────────────────────────────────────────
 
 class InitializeRequest(BaseModel):
     session_id: str
@@ -78,9 +70,6 @@ class StepRequest(BaseModel):
     crossover_type: str = Field("two_point")
 
 
-# ─────────────────────────────────────────────────────────
-# Endpoints
-# ─────────────────────────────────────────────────────────
 
 @app.get("/health")
 def health_check():
