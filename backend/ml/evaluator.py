@@ -1,8 +1,3 @@
-"""
-ML Model Evaluator for Genetic Algorithm Feature Selection
-Handles data preprocessing and model training/evaluation.
-"""
-
 import numpy as np
 import pandas as pd
 from typing import Tuple, Dict, Any, List, Optional
@@ -18,10 +13,6 @@ warnings.filterwarnings("ignore")
 
 
 class MLEvaluator:
-    """
-    Wraps scikit-learn models to evaluate feature subsets.
-    Used as the fitness evaluation oracle for the GA.
-    """
 
     SUPPORTED_MODELS = {
         "logistic_regression": LogisticRegression,
@@ -53,62 +44,50 @@ class MLEvaluator:
         self.baseline_accuracy: float = 0.0  # All features
         self.class_names: List[str] = []
 
-    # ─────────────────────────────────────────────
-    # Data Loading & Preprocessing
-    # ─────────────────────────────────────────────
-
     def load_dataframe(self, df: pd.DataFrame, target_column: str) -> Dict[str, Any]:
-        """
-        Load and preprocess a DataFrame.
-        - Encodes categorical features
-        - Scales numeric features
-        - Splits into train/test
-        Returns metadata about the dataset.
-        """
+
         df = df.copy()
 
-        # Separate features and target
         if target_column not in df.columns:
             raise ValueError(f"Target column '{target_column}' not found in dataset.")
 
         y_raw = df[target_column]
         X_raw = df.drop(columns=[target_column])
 
-        # Drop columns with too many missing values (>50%)
         missing_thresh = 0.5
         X_raw = X_raw.loc[:, X_raw.isnull().mean() < missing_thresh]
 
-        # Encode categorical feature columns
         for col in X_raw.select_dtypes(include=["object", "category"]).columns:
             le = LabelEncoder()
             X_raw[col] = le.fit_transform(X_raw[col].astype(str))
 
-        # Fill remaining missing values with column medians
         X_raw = X_raw.fillna(X_raw.median(numeric_only=True))
 
         self.feature_names = list(X_raw.columns)
         self.n_features = len(self.feature_names)
 
-        # Encode target
         y_encoded = self.label_encoder.fit_transform(y_raw.astype(str))
         self.class_names = list(self.label_encoder.classes_)
         self.n_classes = len(self.class_names)
 
         X_np = X_raw.values.astype(np.float64)
 
-        # Train/test split
         X_tr, X_te, y_tr, y_te = train_test_split(
-            X_np, y_encoded, test_size=self.test_size, random_state=self.random_state, stratify=y_encoded
+            X_np,
+            y_encoded,
+            test_size=self.test_size,
+            random_state=self.random_state,
+            stratify=y_encoded,
         )
 
-        # Scale features
         self.X_train = self.scaler.fit_transform(X_tr)
         self.X_test = self.scaler.transform(X_te)
         self.y_train = y_tr
         self.y_test = y_te
 
-        # Compute baseline with all features
-        self.baseline_accuracy = self._train_and_evaluate(np.ones(self.n_features, dtype=int))
+        self.baseline_accuracy = self._train_and_evaluate(
+            np.ones(self.n_features, dtype=int)
+        )
 
         return {
             "n_samples": len(df),
@@ -122,12 +101,8 @@ class MLEvaluator:
             "target_column": target_column,
         }
 
-    # ─────────────────────────────────────────────
-    # Model Building
-    # ─────────────────────────────────────────────
-
     def _build_model(self):
-        """Instantiate the chosen sklearn model."""
+
         model_cls = self.SUPPORTED_MODELS.get(self.model_name)
         if model_cls is None:
             raise ValueError(f"Unknown model: {self.model_name}")
@@ -139,15 +114,8 @@ class MLEvaluator:
             kwargs["multi_class"] = "auto"
         return model_cls(**kwargs)
 
-    # ─────────────────────────────────────────────
-    # Fitness Evaluation
-    # ─────────────────────────────────────────────
-
     def _train_and_evaluate(self, chromosome: np.ndarray) -> float:
-        """
-        Train model on selected features and return test accuracy.
-        chromosome: binary array of length n_features
-        """
+
         selected = np.where(chromosome == 1)[0]
         if len(selected) == 0:
             return 0.0
@@ -158,8 +126,10 @@ class MLEvaluator:
         model = self._build_model()
 
         if self.cv_folds > 1:
-            # Cross-validation on training set only
-            scores = cross_val_score(model, X_tr, self.y_train, cv=self.cv_folds, scoring="accuracy")
+
+            scores = cross_val_score(
+                model, X_tr, self.y_train, cv=self.cv_folds, scoring="accuracy"
+            )
             return float(scores.mean())
         else:
             model.fit(X_tr, self.y_train)
@@ -167,25 +137,15 @@ class MLEvaluator:
             return float(accuracy_score(self.y_test, y_pred))
 
     def evaluate(self, chromosome: np.ndarray) -> Tuple[float, int]:
-        """
-        Public evaluation interface for the GA.
-        Returns (accuracy, n_selected_features).
-        """
+
         if self.X_train is None:
             raise RuntimeError("Dataset not loaded. Call load_dataframe() first.")
         n_selected = int(chromosome.sum())
         accuracy = self._train_and_evaluate(chromosome)
         return accuracy, n_selected
 
-    # ─────────────────────────────────────────────
-    # Best Subset Analysis
-    # ─────────────────────────────────────────────
-
     def analyze_best_subset(self, chromosome: np.ndarray) -> Dict[str, Any]:
-        """
-        Full analysis of a given feature subset.
-        Returns accuracy, selected feature names, and comparison vs baseline.
-        """
+
         selected_idx = np.where(chromosome == 1)[0]
         accuracy = self._train_and_evaluate(chromosome)
         selected_names = [self.feature_names[i] for i in selected_idx]

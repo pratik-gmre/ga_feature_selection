@@ -1,7 +1,4 @@
-/**
- * components/AccuracyChart.jsx
- * Recharts area chart: GA accuracy vs baseline over generations.
- */
+
 
 import React from 'react'
 import {

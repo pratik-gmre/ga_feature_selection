@@ -1,8 +1,4 @@
-/**
- * components/GAConfigForm.jsx
- * Form to configure all GA hyperparameters.
- * Reads/writes via the shared GAContext.
- */
+
 
 import React from 'react'
 import { useGA } from '../context/GAContext'

@@ -87,7 +87,7 @@ class GeneticAlgorithm:
     def roulette_wheel_selection(self) -> np.ndarray:
       
         scores = np.array(self.fitness_scores)
-        # Shift so minimum is 0
+
         scores = scores - scores.min()
         total = scores.sum()
         if total == 0:
@@ -111,7 +111,7 @@ class GeneticAlgorithm:
     def two_point_crossover(
         self, parent1: np.ndarray, parent2: np.ndarray
     ) -> Tuple[np.ndarray, np.ndarray]:
-        """Two-point crossover between two random loci."""
+
         if random.random() > self.crossover_rate:
             return parent1.copy(), parent2.copy()
         pts = sorted(random.sample(range(1, self.n_features), 2))
