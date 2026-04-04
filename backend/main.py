@@ -147,7 +147,7 @@ def initialize(req: InitializeRequest):
     )
     ga.initialize_population()
 
-    # Persist in session
+
     session["ga"] = ga
     session["evaluator"] = evaluator
     session["dataset_meta"] = meta

@@ -41,7 +41,7 @@ class MLEvaluator:
         self.label_encoder = LabelEncoder()
         self.n_features: int = 0
         self.n_classes: int = 0
-        self.baseline_accuracy: float = 0.0  # All features
+        self.baseline_accuracy: float = 0.0  
         self.class_names: List[str] = []
 
     def load_dataframe(self, df: pd.DataFrame, target_column: str) -> Dict[str, Any]:

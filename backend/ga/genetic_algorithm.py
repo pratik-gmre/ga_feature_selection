@@ -137,7 +137,7 @@ class GeneticAlgorithm:
 
 
     def get_elites(self) -> List[np.ndarray]:
-        """Return the top-k individuals (elites) from the current population."""
+
         sorted_idx = np.argsort(self.fitness_scores)[::-1]
         return [self.population[i].copy() for i in sorted_idx[: self.elitism_count]]
 
